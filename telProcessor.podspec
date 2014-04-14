@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name = "TelProcessor"
   s.version = "0.0.1"
-  s.summary = "It's module, that helps to fix telephone numbers with unnecessary symbols (like "%",":","|" and others) and show them in alert form call menu, there you able to fix number int textField, if region code is missing."
+  s.summary = "It's module, that helps to fix telephone numbers with unnecessary symbols (like '%',':','|' and others) and show them in alert form call menu, there you able to fix number int textField, if region code is missing."
   s.homepage = "https://github.com/wade0n/telProcessor"
   s.license = { :type => 'MIT', :file => 'LICENSE'}
   s.author = { "Dmitrii Kalashnikov" => "mr.dmitriikalashnikov@gmail.com" }
