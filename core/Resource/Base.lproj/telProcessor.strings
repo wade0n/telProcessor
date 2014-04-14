@@ -1,0 +1,16 @@
+/* 
+  telProcessor.strings
+  MyHome
+
+  Created by Дмитрий Калашников on 10/04/14.
+
+*/
+
+
+"Telephone numbers:"  = "Telephone numbers:";
+
+"Cancel" = "Cancel";
+
+"Call" = "Call";
+
+"Input region code to call:" = "Input region code to call:";
