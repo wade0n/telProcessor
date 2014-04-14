@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'core' do |c|
     c.requires_arc = true
-    c.dependecy 'CXAlertView'
+    c.dependency 'CXAlertView'
     c.source_files = 'core/source/*'
     c.resources = 'core/resources/*'
   end
