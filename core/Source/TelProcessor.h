@@ -24,5 +24,6 @@
 
 - (NSMutableArray *)processNumbersArr:(NSArray *)numbersArr;
 - (NSMutableArray *)processTextBlockWithSeparatedNumbers;
+- (NSMutableArray *)proccesTextBlockWithTelephones:(NSString *)textBlock;
 
 @end

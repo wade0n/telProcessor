@@ -82,7 +82,7 @@
     [_numObjectsArr addObject:numObj];
 }
 
-- (BOOL)addCode:(NSString *)codeStr toTel:(TelNumberProcessed *)telObj{
+- (void)addCode:(NSString *)codeStr toTel:(TelNumberProcessed *)telObj{
     if (codeStr && codeStr.length) {
         telObj.numberStr = [NSString stringWithFormat:@"+%i%@%@",CURRENT_COUNTRY_CODE, codeStr, telObj.numberStr];
         if (telObj.numberStr.length == 11) {
@@ -98,6 +98,22 @@
     }
 }
 
+
+- (NSMutableArray *)proccesTextBlockWithTelephones:(NSString *)textBlock{
+    
+    NSMutableArray *returnArr = [NSMutableArray new];
+    if (textBlock && textBlock.length) {
+        NSMutableString *phonesMut = [textBlock mutableCopy];
+        NSString *separator = @"|";
+        [phonesMut replaceOccurrencesOfString:@"," withString:separator options:NSCaseInsensitiveSearch range:NSMakeRange(0, phonesMut.length)];
+        [phonesMut replaceOccurrencesOfString:@";" withString:separator options:NSCaseInsensitiveSearch range:NSMakeRange(0, phonesMut.length)];
+        NSArray *phonesSeparated = [phonesMut componentsSeparatedByString:separator];
+        
+        returnArr = [self processNumbersArr:phonesSeparated];
+    }
+    
+    return returnArr;
+}
 - (NSString *)formTelInputStr:(NSString *)telNum{
     NSString *returnStr = [NSString stringWithFormat:@"+%i",CURRENT_COUNTRY_CODE];
     if (telNum && telNum.length) {
