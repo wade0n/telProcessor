@@ -44,11 +44,17 @@
                 NSString * strippedNumber = [numStr stringByReplacingOccurrencesOfString:@"[^0-9]" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, [numStr length])];
                 if (strippedNumber.length <= NUMBER_LENGTH) {
                     if (strippedNumber.length == NUMBER_LENGTH) {
-                        if ([[strippedNumber substringToIndex:1] isEqualToString:[NSString stringWithFormat:@"%i",CURRENT_LOCAL_COUNTRY_CODE]]) {
+                        if ([[strippedNumber substringToIndex:1] isEqualToString:[NSString stringWithFormat:@"%i",CURRENT_LOCAL_COUNTRY_CODE]] || [[strippedNumber substringToIndex:1] isEqualToString:[NSString stringWithFormat:@"%i",CURRENT_COUNTRY_CODE]]) {
                             strippedNumber = [NSString stringWithFormat:@"+%i%@",CURRENT_COUNTRY_CODE,[strippedNumber substringFromIndex:1]];
                             [self generateNumWithFixedStr:strippedNumber fixed:YES];
+                        }else{
+                            [self generateNumWithFixedStr:strippedNumber fixed:NO];
                         }
-                    }else{
+                    }else if (strippedNumber.length == NUMBER_LENGTH-1){
+                        strippedNumber = [NSString stringWithFormat:@"+%i%@",CURRENT_COUNTRY_CODE,strippedNumber];
+                        [self generateNumWithFixedStr:strippedNumber fixed:YES];
+                    }
+                    else {
                         [self generateNumWithFixedStr:strippedNumber fixed:NO];
                     }
                 }
@@ -73,7 +79,7 @@
     numObj.numberStr = [NSString stringWithString:numStr];
     numObj.isFixed = isFixed;
     
-    if (numStr.length > NUMBER_LENGTH) {
+    if (numStr.length > NUMBER_LENGTH+1) {
         numObj.isAbleFixed = NO;
     }
     else
