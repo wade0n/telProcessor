@@ -26,7 +26,7 @@
         _numbersArr = [NSMutableArray new];
         self.phoneMenuTitle = NSLocalizedStringFromTable(@"Telephone numbers:", @"telProcessor", @"");
         _telView = [WAUtility loadNibNamed:@"telProc" ofClass:[TelInputView class]];
-        
+        _telViewWithTextField = [WAUtility loadNibNamed:@"telProcWithTextField" ofClass:[TelInputWithTextFieldView class]];
     }
     return self;
 }
@@ -47,10 +47,10 @@
                         if ([[strippedNumber substringToIndex:1] isEqualToString:[NSString stringWithFormat:@"%i",CURRENT_LOCAL_COUNTRY_CODE]] || [[strippedNumber substringToIndex:1] isEqualToString:[NSString stringWithFormat:@"%i",CURRENT_COUNTRY_CODE]]) {
                             strippedNumber = [NSString stringWithFormat:@"+%i%@",CURRENT_COUNTRY_CODE,[strippedNumber substringFromIndex:1]];
                             [self generateNumWithFixedStr:strippedNumber fixed:YES];
-                        }else{
+                        } else {
                             [self generateNumWithFixedStr:strippedNumber fixed:NO];
                         }
-                    }else if (strippedNumber.length == NUMBER_LENGTH-1){
+                    } else if (strippedNumber.length == NUMBER_LENGTH-1) {
                         strippedNumber = [NSString stringWithFormat:@"+%i%@",CURRENT_COUNTRY_CODE,strippedNumber];
                         [self generateNumWithFixedStr:strippedNumber fixed:YES];
                     }
@@ -58,13 +58,14 @@
                         [self generateNumWithFixedStr:strippedNumber fixed:NO];
                     }
                 }
-                else{
-                     [self generateNumWithFixedStr:strippedNumber fixed:NO];
+                else {
+                     [self generateNumWithFixedStr:numStr fixed:NO];
                 }
+                NSLog(@"%@", strippedNumber);
             }
         }
     }
-    else{
+    else {
         NSLog(@"empty or nil array input - %@",numbersArr);
     }
     
@@ -103,7 +104,6 @@
         }
     }
 }
-
 
 - (NSMutableArray *)proccesTextBlockWithTelephones:(NSString *)textBlock{
     
@@ -154,6 +154,21 @@
     
     return returnStr;
 }
+
+- (NSString*)fixUserEditPhoneNumber:(NSString*)number {
+    NSString * strippedNumber = [number stringByReplacingOccurrencesOfString:@"[^0-9]" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, [number length])];
+    if ([[strippedNumber substringToIndex:1] isEqualToString:[NSString stringWithFormat:@"%i",CURRENT_LOCAL_COUNTRY_CODE]] || [[strippedNumber substringToIndex:1] isEqualToString:[NSString stringWithFormat:@"%i",CURRENT_COUNTRY_CODE]])
+            strippedNumber = [NSString stringWithFormat:@"+%i%@",CURRENT_COUNTRY_CODE,[strippedNumber substringFromIndex:1]];
+    else
+        strippedNumber = [NSString stringWithFormat:@"+%i%@",CURRENT_COUNTRY_CODE,strippedNumber];
+    
+    if (strippedNumber.length > NUMBER_LENGTH) {
+        strippedNumber = [NSString stringWithFormat:@"%@;%@", [strippedNumber substringToIndex:NUMBER_LENGTH+1], [strippedNumber substringFromIndex:NUMBER_LENGTH+1]];
+    }
+        
+    return strippedNumber;
+}
+
 - (void)showCallMenu:(NSMutableArray *)phones{
 
     UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
@@ -192,22 +207,52 @@
         
         TelNumberProcessed *telProc = [_numObjectsArr objectAtIndex:buttonIndex];
         
-        
         if (telProc.isFixed) {
             [self dialNumber:telProc.numberStr];
         }
         else{
+            CXAlertView *alertView;
+            TelProcessor *selfCaptured = self;
+            if( telProc.isAbleFixed){
             
-            _telView.telLabel.text = [self formTelInputStr:telProc.numberStr];
+                _telView.telLabel.text = [self formTelInputStr:telProc.numberStr];
+                
+                alertView = [[CXAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Input region code to call:", @"telProcessor",@"")
+                                                                contentView:_telView cancelButtonTitle:nil];
+                alertView.willShowHandler = ^(CXAlertView *alertView) {
+                    NSLog(@"%@, willShowHandler", alertView);
+                    [_telView setUp];
+                };
+                
+                [alertView addButtonWithTitle:NSLocalizedStringFromTable(@"Call", @"telProcessor",@"") type:CXAlertViewButtonTypeCancel handler:^(CXAlertView *alertView, CXAlertButtonItem *button) {
+                    [_telView resignFirstResponder];
+                    [alertView dismiss];
+                    [selfCaptured addCode:_telView.codeStr toTel:telProc];
+                    
+                    [selfCaptured dialNumber:telProc.numberStr];
+                }];
+
+            }else{
+                _telViewWithTextField.telTextField.text = telProc.numberStr;
+                
+                alertView = [[CXAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Input region code to call:", @"telProcessor",@"")
+                                                   contentView:_telViewWithTextField cancelButtonTitle:nil];
+                alertView.willShowHandler = ^(CXAlertView *alertView) {
+                    NSLog(@"%@, willShowHandler", alertView);
+                    [_telViewWithTextField.telTextField becomeFirstResponder];
+                };
+                
+                [alertView addButtonWithTitle:NSLocalizedStringFromTable(@"Call", @"telProcessor",@"") type:CXAlertViewButtonTypeCancel handler:^(CXAlertView *alertView, CXAlertButtonItem *button) {
+                    [_telViewWithTextField resignFirstResponder];
+                    NSLog(@"%@", [self fixUserEditPhoneNumber:_telViewWithTextField.telTextField.text]);
+                    [selfCaptured dialNumber:[self fixUserEditPhoneNumber:_telViewWithTextField.telTextField.text]];
+                    [alertView dismiss];
+                    
+                }];
+
+            }
             
-            CXAlertView *alertView = [[CXAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Input region code to call:", @"telProcessor",@"")
-                                                            contentView:_telView cancelButtonTitle:nil];
             
-           
-            alertView.willShowHandler = ^(CXAlertView *alertView) {
-                NSLog(@"%@, willShowHandler", alertView);
-               [_telView setUp];
-            };
             alertView.didShowHandler = ^(CXAlertView *alertView) {
                 NSLog(@"%@, didShowHandler", alertView);
             };
@@ -222,20 +267,13 @@
             alertView.cancelButtonColor = [UIColor colorWithRed:53.0f/255.0f green:160.0f/255.0f blue:35.0f/255.0f alpha:1.0];
             alertView.buttonColor = [UIColor redColor];
             [alertView setTitleFont:[UIFont fontWithName:@"HelveticaNeue" size:16.0f]];
-            TelProcessor *selfCaptured = self;
+            
             
             [alertView addButtonWithTitle:NSLocalizedStringFromTable(@"Cancel", @"telProcessor",@"") type:CXAlertViewButtonTypeCustom handler:^(CXAlertView *alertView, CXAlertButtonItem *button) {
                 [_telView resignFirstResponder];
+                [_telViewWithTextField resignFirstResponder];
                 [alertView dismiss];
                 [selfCaptured showCallMenu:_numbersArr];
-            }];
-            
-            [alertView addButtonWithTitle:NSLocalizedStringFromTable(@"Call", @"telProcessor",@"") type:CXAlertViewButtonTypeCancel handler:^(CXAlertView *alertView, CXAlertButtonItem *button) {
-                [_telView resignFirstResponder];
-                [alertView dismiss];
-                [selfCaptured addCode:_telView.codeStr toTel:telProc];
-                
-                [selfCaptured dialNumber:telProc.numberStr];
             }];
             
             [alertView showButtonLine];
@@ -248,10 +286,7 @@
             }else{
                 alertView.alertWindow.center = CGPointMake(alertView.center.x, alertView.center.y-44);
             }
-
         }
-        
-        
     }
 }
 
