@@ -8,12 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import "TelInputView.h"
-
+#import "TelInputWithTextFieldView.h"
 @interface TelProcessor : NSObject <UIActionSheetDelegate, UITextInput>{
     NSMutableArray *_numbersArr;
     NSMutableArray *_numObjectsArr;
     
 }
+@property(nonatomic, strong) TelInputWithTextFieldView *telViewWithTextField;
 @property(nonatomic, strong) TelInputView *telView;
 @property(nonatomic, strong) NSString *phoneMenuTitle;
 
