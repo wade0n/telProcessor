@@ -200,7 +200,7 @@
             
             _telView.telLabel.text = [self formTelInputStr:telProc.numberStr];
             
-            CXAlertView *alertView = [[CXAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Input region code to call:", @"telProcessor",@"")
+            CXAlertView *alertView = [[CXAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Edit phone:", @"telProcessor",@"")
                                                             contentView:_telView cancelButtonTitle:nil];
             
            
