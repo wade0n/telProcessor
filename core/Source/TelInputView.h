@@ -12,6 +12,7 @@
     BOOL isCodeFull;
 }
 
+@property(nonatomic) int codeLength;
 @property(nonatomic, strong) IBOutlet UILabel *telLabel;
 @property(nonatomic, strong) NSString *codeStr;
 

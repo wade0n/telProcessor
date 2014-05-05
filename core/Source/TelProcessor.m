@@ -222,10 +222,12 @@
                 alertView.willShowHandler = ^(CXAlertView *alertView) {
                     NSLog(@"%@, willShowHandler", alertView);
                     [_telView setUp];
+                    [_telView setCodeLength:NUMBER_LENGTH-1-telProc.numberStr.length];
                 };
                 
                 [alertView addButtonWithTitle:NSLocalizedStringFromTable(@"Call", @"telProcessor",@"") type:CXAlertViewButtonTypeCancel handler:^(CXAlertView *alertView, CXAlertButtonItem *button) {
                     [_telView resignFirstResponder];
+                    
                     [alertView dismiss];
                     [selfCaptured addCode:_telView.codeStr toTel:telProc];
                     
