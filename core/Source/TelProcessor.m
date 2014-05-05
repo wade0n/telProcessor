@@ -225,6 +225,14 @@
                     [_telView setCodeLength:NUMBER_LENGTH-1-telProc.numberStr.length];
                 };
                 
+                
+                [alertView addButtonWithTitle:NSLocalizedStringFromTable(@"Cancel", @"telProcessor",@"") type:CXAlertViewButtonTypeCustom handler:^(CXAlertView *alertView, CXAlertButtonItem *button) {
+                    [_telView resignFirstResponder];
+                    [_telViewWithTextField resignFirstResponder];
+                    [alertView dismiss];
+                    [selfCaptured showCallMenu:_numbersArr];
+                }];
+
                 [alertView addButtonWithTitle:NSLocalizedStringFromTable(@"Call", @"telProcessor",@"") type:CXAlertViewButtonTypeCancel handler:^(CXAlertView *alertView, CXAlertButtonItem *button) {
                     [_telView resignFirstResponder];
                     
@@ -244,6 +252,13 @@
                     [_telViewWithTextField.telTextField becomeFirstResponder];
                 };
                 
+                [alertView addButtonWithTitle:NSLocalizedStringFromTable(@"Cancel", @"telProcessor",@"") type:CXAlertViewButtonTypeCustom handler:^(CXAlertView *alertView, CXAlertButtonItem *button) {
+                    [_telView resignFirstResponder];
+                    [_telViewWithTextField resignFirstResponder];
+                    [alertView dismiss];
+                    [selfCaptured showCallMenu:_numbersArr];
+                }];
+
                 [alertView addButtonWithTitle:NSLocalizedStringFromTable(@"Call", @"telProcessor",@"") type:CXAlertViewButtonTypeCancel handler:^(CXAlertView *alertView, CXAlertButtonItem *button) {
                     [_telViewWithTextField resignFirstResponder];
                     NSLog(@"%@", [self fixUserEditPhoneNumber:_telViewWithTextField.telTextField.text]);
@@ -271,12 +286,6 @@
             [alertView setTitleFont:[UIFont fontWithName:@"HelveticaNeue" size:16.0f]];
             
             
-            [alertView addButtonWithTitle:NSLocalizedStringFromTable(@"Cancel", @"telProcessor",@"") type:CXAlertViewButtonTypeCustom handler:^(CXAlertView *alertView, CXAlertButtonItem *button) {
-                [_telView resignFirstResponder];
-                [_telViewWithTextField resignFirstResponder];
-                [alertView dismiss];
-                [selfCaptured showCallMenu:_numbersArr];
-            }];
             
             [alertView showButtonLine];
             [alertView show];
