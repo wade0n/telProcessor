@@ -234,12 +234,18 @@
                 }];
 
                 [alertView addButtonWithTitle:NSLocalizedStringFromTable(@"Call", @"telProcessor",@"") type:CXAlertViewButtonTypeCancel handler:^(CXAlertView *alertView, CXAlertButtonItem *button) {
-                    [_telView resignFirstResponder];
                     
-                    [alertView dismiss];
-                    [selfCaptured addCode:_telView.codeStr toTel:telProc];
                     
-                    [selfCaptured dialNumber:telProc.numberStr];
+                    if (_telView.isCodeFull) {
+                        [_telView resignFirstResponder];
+                        [alertView dismiss];
+                        [selfCaptured addCode:_telView.codeStr toTel:telProc];
+                        
+                        [selfCaptured dialNumber:telProc.numberStr];
+                    }
+                    else{
+                        [alertView shake];
+                    }
                 }];
 
             }else{

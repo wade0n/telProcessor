@@ -9,12 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @interface TelInputView : UIView <UIKeyInput>{
-    BOOL isCodeFull;
+  
 }
 
+@property(nonatomic) BOOL isCodeFull;
 @property(nonatomic) int codeLength;
 @property(nonatomic, strong) IBOutlet UILabel *telLabel;
 @property(nonatomic, strong) NSString *codeStr;
+
 
 - (void)setUp;
 @end
