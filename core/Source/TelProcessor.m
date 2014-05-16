@@ -32,7 +32,7 @@
 }
 
 - (NSMutableArray *)processNumbersArr:(NSArray *)numbersArr{
-    NSMutableArray *fidedNumbers = [NSMutableArray new];
+    NSMutableArray *fixedNumbers = [NSMutableArray new];
 
     [self cleanUp];
     
@@ -68,11 +68,13 @@
     else {
         NSLog(@"empty or nil array input - %@",numbersArr);
     }
+    for (TelNumberProcessed *numObj in _numObjectsArr) {
+        [fixedNumbers addObject:numObj.numberStr];
+    }
     
+    [self showCallMenu:fixedNumbers];
     
-    [self showCallMenu:_numbersArr];
-    
-    return fidedNumbers;
+    return fixedNumbers;
 }
 
 - (void)generateNumWithFixedStr:(NSString *)numStr fixed:(BOOL)isFixed{
