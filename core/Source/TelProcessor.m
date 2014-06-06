@@ -253,7 +253,7 @@
             }else{
                 _telViewWithTextField.telTextField.text = telProc.numberStr;
                 
-                alertView = [[CXAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Input region code to call:", @"telProcessor",@"")
+                alertView = [[CXAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Edit phone:", @"telProcessor",@"")
                                                    contentView:_telViewWithTextField cancelButtonTitle:nil];
                 alertView.willShowHandler = ^(CXAlertView *alertView) {
                     NSLog(@"%@, willShowHandler", alertView);
