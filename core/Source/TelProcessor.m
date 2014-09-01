@@ -261,8 +261,7 @@
                 };
                 
                 [alertView addButtonWithTitle:NSLocalizedStringFromTable(@"Cancel", @"telProcessor",@"") type:CXAlertViewButtonTypeCustom handler:^(CXAlertView *alertView, CXAlertButtonItem *button) {
-                    [_telView resignFirstResponder];
-                    [_telViewWithTextField resignFirstResponder];
+                    [_telViewWithTextField.telTextField resignFirstResponder];
                     [alertView dismiss];
                     [selfCaptured showCallMenu:_numbersArr];
                 }];
